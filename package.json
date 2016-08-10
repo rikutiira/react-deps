@@ -1,0 +1,40 @@
+{
+  "name": "react-deps",
+  "version": "0.0.1",
+  "description": "",
+  "main": "./lib/index.js",
+  "scripts": {
+    "dev": "npm run build_client && BABEL_DISABLE_CACHE=1 nodemon dev/bootstrap.js",
+    "build": "babel src/index.js --out-file lib/index.js",
+    "build_client": "browserify dev/client.js -o lib/client.js -t [ babelify ]",
+    "prepublish": "npm run build"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rikutiira/react-deps.git"
+  },
+  "author": "Riku Tiira (https://github.com/rikutiira)",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.9.0",
+    "babel-core": "^6.13.2",
+    "babel-polyfill": "^6.13.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-stage-2": "^6.5.0",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.0",
+    "express": "^4.14.0",
+    "nodemon": "^1.10.0",
+    "react": "^15.0.2",
+    "react-dom": "^15.0.2"
+  },
+  "peerDependencies": {
+    "react": "^0.14.0 || ^15.0.0-0",
+    "react-dom": "^0.14.0 || ^15.0.0"
+  }
+}
