@@ -1,0 +1,8 @@
+{
+    "ignore": [
+        "lib/"
+    ],
+    "events": {
+        "restart": "npm run build_client"
+    }
+}
