@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import ReactDOMServer from 'react-dom/server'
-import { Promise } from 'bluebird'
 
 let usedDependencies = new Map()
 let initialRender = false
@@ -59,7 +58,7 @@ const renderUntilReady = (element) => {
     ).then((htmlArr) => htmlArr[htmlArr.length-1])
 }
 
-export const dependencies = (dependencies = {}, waitForAll) => (Component) => {
+export const load = (dependencies = {}, waitForAll) => (Component) => {
     return React.createClass({
         componentWillMount() {
             waitForAll = initialRender ? true : waitForAll

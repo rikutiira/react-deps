@@ -1,5 +1,5 @@
 import React from 'react'
-import { dependencies } from '../src/index.js'
+import { load } from '../src/index.js'
 import { getFoo, getBar, getFoobar } from './store'
 
 const Foo = React.createClass({
@@ -44,16 +44,16 @@ const App = React.createClass({
     }
 })
 
-const FooWithDeps = dependencies({
+const FooWithDeps = load({
     foobar: (props) => getFoobar()
 })(Foo)
 
-const BarWithDeps = dependencies({
+const BarWithDeps = load({
     barClient: (props) => new Promise((resolve) => setTimeout(() => resolve(props.hello.toUpperCase()), 1000)),
     barClient2: () => new Promise((resolve) => setTimeout(() => resolve('CUP 2018'), 2500))
 })(Bar)
 
-const AppWithDeps = dependencies({
+const AppWithDeps = load({
     foo: (props) => getFoo(),
     bar: (props) => getBar()
 })(App)
