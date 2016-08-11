@@ -1,6 +1,6 @@
 import React from 'react'
 import { load } from '../src/index.js'
-import { getFoo, getBar, getFoobar } from './store'
+import { getFoo, getBar, getFoobar, getMock } from './store'
 
 const Foo = React.createClass({
     displayName: 'Foo',
@@ -55,7 +55,8 @@ const BarWithDeps = load({
 
 const AppWithDeps = load({
     foo: (props) => getFoo(),
-    bar: (props) => getBar()
+    bar: (props) => getBar(),
+    mock: () => getMock()
 })(App)
 
 export default AppWithDeps
