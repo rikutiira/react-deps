@@ -94,7 +94,7 @@ Also notice that React Deps is not dependent of any library implementation and t
 
 Your dependency functions also get a second argument `isInitialRender` which can be used for optimizing your requests. `isInitialRender` is set to `true` on the server and also when rendering on the client for the first time, otherwise it's set to `false`. This makes it possible to write optimized code such as:
 
-```
+```js
 import { load } from 'react-deps';
 import { store } from './store';
 import MyComponent from './MyComponent'
@@ -116,7 +116,6 @@ export default load({
         return getPost(props.postId, useCurrentValue);
     }
 })(MyComponent)
-
 ```
 
 ### What makes React Deps good for isomorphic applications?
