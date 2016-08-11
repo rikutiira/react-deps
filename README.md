@@ -33,7 +33,7 @@ React Deps has no internal dependencies (aside from React) and is very lightweig
 
 ## Isomorphism
 
-```
+```js
 /**
  * server
  */
@@ -72,7 +72,7 @@ app.listen(9000, function() {
 });
 ```
 
-```
+```js
 /**
  * client
  */
