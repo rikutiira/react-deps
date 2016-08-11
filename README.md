@@ -7,7 +7,6 @@ React Deps lets you to declare dependencies on component level in composable, un
 import { load } from 'react-deps';
 import store from './store';
 
-//asynchronous action
 const getPosts = () => {
     return store.posts
         ? store.posts
@@ -19,10 +18,10 @@ const getPosts = () => {
             });
 };
 
-const Component = (props) => <h1>Hello {props.world}!</h1>;
+const Component = (props) => <h1>Posts: {JSON.stringify(props.posts)}</h1>;
 
 export default load({
-  world: (props, isInitialRender) => getWorld() //returns value or promise, isInitialRender flag can be used for optimization
+  posts: (props, isInitialRender) => getPosts()
 })(Component);
 ```
 
