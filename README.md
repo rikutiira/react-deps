@@ -7,10 +7,10 @@ React Deps lets you to declare dependencies on component level in composable, un
 import { load } from 'react-deps';
 import { getWorld } from './myActions';
 
-const Component = (props, initialRender) => <h1>Hello {props.world}!</h1>;
+const Component = (props) => <h1>Hello {props.world}!</h1>;
 
 export default load({
-  world: getWorld() //returns value or promise
+  world: (props, initialRender) => getWorld() //returns value or promise
 })(Component);
 ```
 
