@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import ReactDOMServer from 'react-dom/server'
 
 const isClient = typeof window !== 'undefined' && window.document
+
 const flatten = (arr = []) => !arr.length ? arr : arr.reduce((flattenedArr, item) => flattenedArr.concat(item))
 const zipObj = (keys = [], values = []) => Object.assign({}, ...keys.map((key, idx) => ({ [key]: values[idx] })))
 const pick = (arr = [], key) => arr.map((it) => it[key])
