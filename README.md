@@ -96,9 +96,10 @@ Your dependency functions also get a second argument `isInitialRender` which can
 ```
 import { load } from 'react-deps';
 import { store } from './store';
+import MyComponent from './MyComponent'
 
-const getPost = (postId, alwaysFetchNewValue) => {
-    return !alwaysFetchNewValue && store.posts && store.posts[postId]
+const getPost = (postId, useCurrentValue) => {
+    return useCurrentValue && store.posts && store.posts[postId]
         ? store.posts[postId]
         : fetch(`http://jsonplaceholder.typicode.com/posts/${postId}`)
             .then((response) => response.json())
@@ -108,12 +109,12 @@ const getPost = (postId, alwaysFetchNewValue) => {
             });
 };
 
-load({
+export default load({
     post: (props, isInitialRender) => {
-        const alwaysFetchNewValue = !isInitialRender
-        return getPost(props.postId, alwaysFetchNewValue)
+        const useCurrentValue = isInitialRender;
+        return getPost(props.postId, useCurrentValue);
     }
-})
+})(MyComponent)
 
 ```
 
