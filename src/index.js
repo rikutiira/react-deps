@@ -4,7 +4,7 @@ import ReactDOMServer from 'react-dom/server'
 
 let usedDependencies = new Map()
 let initialRender = false
-let isClient = false
+let isClient = typeof window !== 'undefined' && window.document
 
 const flatten = (arr = []) => !arr.length ? arr : arr.reduce((flattenedArr, item) => flattenedArr.concat(item))
 
@@ -37,9 +37,7 @@ const promiseUtils = {
 }
 
 const renderUntilReady = (element) => {
-    isClient = false
-
-    const html = ReactDOMServer.renderToString(element)
+    const html = ReactDOMServer.renderToStaticMarkup(element)
 
     return promiseUtils.all(
         Array.from(usedDependencies.keys()).map((key) => {
@@ -99,14 +97,10 @@ export const load = (dependencies = {}, waitForAll) => (Component) => {
 export const render = (element, node) => {
     usedDependencies = new Map()
     initialRender = true
+    ReactDOM.render(element, node)
 
-    renderUntilReady(element).then(() => {
-        isClient = true
-        ReactDOM.render(element, node)
-
-        promiseUtils.all(flatten(pick(Array.from(usedDependencies.values()), 'deps'))).then(() => {
-            initialRender = false
-        })
+    promiseUtils.all(flatten(pick(Array.from(usedDependencies.values()), 'deps'))).then(() => {
+        initialRender = false
     })
 }
 
