@@ -28,7 +28,7 @@ export default load({
 
 ## How it works
 
-Actually, the above is pretty much it. The library is a simple HOC (higher order component) called `load`. It takes a single argument, an object which keys will be props passed to your component and the values are functions which can return either plain values or promises which will be passed down to your component once resolved.
+Actually, the above is pretty much it. The library is a simple HOC (higher order component) called `load`. It takes a single argument, an object with its keys mapped to props passed to your component. The values are functions which are called with two optional arguments `props` and `initialRender` (more on it later) and the function should either return a plain value or a promise. The values are passed down to your component as props when resolved.
 
 React Deps has no internal dependencies (aside from React) and is very lightweight. Since it's nothing more than a simple HOC, it's library-agnostic and can be used with any solution.
 
@@ -47,28 +47,29 @@ import { store } from './store';
 const app = express();
 
 app.get('/', function(req, res) {
-  renderToString(<App />).then((html) => {
-    res.send(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8">
-          <title>React Deps</title>
-          <script>
-            window.__INITIAL_STATE__ = ${JSON.stringify(store.getState())}
-          </script>
-        </head>
-        <body>
-          <div id="app">${html}</div>
-          <script type="application/javascript" src="app.js"></script>
-        </body>
-      </html>
-    `);
-  });
+    //use React Deps renderToString instead of ReactDOMServer.renderToString
+    renderToString(<App />).then((html) => {
+        res.send(`
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <meta charset="utf-8">
+                    <title>React Deps</title>
+                    <script>
+                        window.__INITIAL_STATE__ = ${JSON.stringify(store.getState())}
+                    </script>
+                </head>
+                <body>
+                    <div id="app">${html}</div>
+                    <script type="application/javascript" src="app.js"></script>
+                </body>
+            </html>
+        `);
+    });
 });
 
 app.listen(9000, function() {
-  console.log('*** This is an isomorphic react server ***');
+    console.log('*** This is an isomorphic react server ***');
 });
 ```
 
@@ -81,14 +82,16 @@ import { render } from 'react-deps'
 import { App } from './App'
 import { store } from './store'
 
-store = window.__INITIAL_STATE__ || {} //simple assignment for clarity's sake, normally store state is set through its own API
+//simple assignment for clarity's sake, normally store state is set through its own API
+store = window.__INITIAL_STATE__ || {}
 
-render(<App />, document.querySelector('#app')) //use React Deps render instead of ReactDOM.render
+//use React Deps render instead of ReactDOM.render
+render(<App />, document.querySelector('#app'))
 ```
 
-The above is all you need to have a fully working isomorphic application with React Deps. The only thing you need to do is to use `load` to load your component dependencies and make sure that when on the client, your dependencies will get data from your store instead of fetching it from the server again. Also notice that React Deps is not dependent of any library implementation and therefore it's up to you to hydrate your data from server to client. This allows React Deps to be very composable and pluggable for almost any architecture you may use.
+The above is all you need to have a fully working isomorphic application with React Deps. The only thing you need to do is to use `load` to load your component dependencies and make sure that when on the client, your dependencies will get data from your store instead of fetching it from the server again. Also notice that React Deps is not dependent of any library implementation and therefore it's up to you to hydrate your data from server to client. This allows React Deps to be very composable and pluggable for almost any architecture you may use. Don't worry though, it's very easy to do as shown in the above example.
 
-If you take a look at the first example on the page, it demonstrates how your action is doing a server request only if your store doesn't have the data yet. Your dependencies also get a second argument `isInitialRender` which can be used for optimizing your asynchronous code. `isInitialRender` is set to `true` when rendering on the server and when rendering on the client for the first time, otherwise it's `false`:
+If you take a look at the first example on the page, it demonstrates how your action is doing a server request only if your store doesn't have the data yet. Your dependency functions also get a second argument `isInitialRender` which can be used for optimizing your requests. `isInitialRender` is set to `true` on the server and also when rendering on the client for the first time, otherwise it's set to `false`. This makes it possible to write optimized code such as:
 
 ```
 import { load } from 'react-deps';
@@ -124,4 +127,4 @@ React is capable of isomorphic applications but it wasn't likely built with all 
 
 The first two solutions are not ideal. It's ideal to let components declare what data they need to function and have the same declarations work both on client and server. With the first two solutions, you are very likely declaring data for components out of their own scope, which may lead to tightly coupled, implicit code. You also possibly have to maintain data dependencies in multiple places which is not optimal.
 
-React Deps utilizes the third approach. Each `renderToString` call on the server will cause React to render the component tree and React Deps will keep track of all the declared dependencies. Once the dependencies have been loaded, React Deps will call `renderToString` again as new dependencies can cause React to render more components. This is repeated until two subsequent `renderToString` calls return the same dependencies. It's also notable that React Deps caches all the dependencies so they are only called once no matter how many `renderToString` calls are made, keeping it very fast even with deep component trees.
+React Deps utilizes the third approach. This is accomplished by using its own asynchronous version of `renderToString`. `renderToString` call on the server will cause React to render the component tree and React Deps will keep track of all the dependencies your components are using. Once all the dependencies have been loaded, React Deps will call `renderToString` again as new dependencies can cause React to render more components. This is repeated until two subsequent `renderToString` calls return the same dependencies. It's also notable that React Deps caches all the dependencies so they are only called once no matter how many `renderToString` calls are made, keeping it very fast even with deep component trees.
