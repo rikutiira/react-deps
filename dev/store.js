@@ -19,7 +19,7 @@ export const getFoobar = () => store.foobar ||
         resolve('foobar')
     }, 700))
 
-export const getMock = () => store.mock || fetch('http://jsonplaceholder.typicode.com/posts/1/comments')
+export const getMock = () => store.comments || fetch('http://jsonplaceholder.typicode.com/posts/1/comments')
     .then((response) => response.json())
     .then((data) => {
         store.comments = data
